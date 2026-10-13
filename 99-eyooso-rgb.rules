@@ -1,0 +1,4 @@
+# E-YOOSO Z-686 (258a:0049): acesso ao hidraw sem sudo / hidraw access without sudo.
+# sudo cp 99-eyooso-rgb.rules /etc/udev/rules.d/ && sudo udevadm control --reload-rules && sudo udevadm trigger
+
+KERNEL=="hidraw*", ATTRS{idVendor}=="258a", ATTRS{idProduct}=="0049", MODE="0666", TAG+="uaccess"
