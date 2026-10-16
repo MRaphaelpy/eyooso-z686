@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Z-686 RGB</title>
+<style>
+  :root {
+    --bg: #0d0f14; --painel: #161a22; --painel2: #1d222c; --borda: #2a303c;
+    --texto: #e8ebf1; --sutil: #8b93a3; --acento: #7c5cff; --acento2: #19d3c5;
+    --erro: #ff5d6c; --ok: #3ddc84;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(1200px 600px at 20% -10%, #1c1640 0%, transparent 60%),
+                radial-gradient(900px 500px at 110% 10%, #0f2f3a 0%, transparent 55%), var(--bg);
+    color: var(--texto); min-height: 100vh;
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 32px; max-width: 1180px; margin: 0 auto;
+  }
+  .logo { font-size: 22px; font-weight: 700; letter-spacing: .5px; }
+  .logo span {
+    background: linear-gradient(90deg, #ff4d6d, #ffbe0b, #3ddc84, #19d3c5, #7c5cff, #ff4d6d);
+    background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: arco 8s linear infinite;
+  }
+  @keyframes arco { to { background-position: 300% 0; } }
+  .status { display: flex; align-items: center; gap: 8px; color: var(--sutil); font-size: 14px; }
+  .ponto { width: 10px; height: 10px; border-radius: 50%; background: var(--sutil); }
+  .ponto.on { background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+  .ponto.off { background: var(--erro); box-shadow: 0 0 10px var(--erro); }
+  main { max-width: 1180px; margin: 0 auto; padding: 0 32px 40px; }
+  .abas { display: flex; gap: 6px; background: var(--painel); padding: 6px; border-radius: 14px;
+          width: fit-content; border: 1px solid var(--borda); margin-bottom: 20px; }
+  .aba { padding: 10px 20px; border-radius: 10px; cursor: pointer; color: var(--sutil);
+         font-weight: 600; border: 0; background: none; font-size: 15px; }
+  .aba.ativa { background: var(--acento); color: white; box-shadow: 0 4px 18px #7c5cff55; }
+  .painel { background: var(--painel); border: 1px solid var(--borda); border-radius: 18px; padding: 22px; }
+  .teclado-caixa {
+    background: linear-gradient(180deg, #1a1e27, #111419); border-radius: 18px; padding: 18px;
+    border: 1px solid #262b36; box-shadow: inset 0 2px 0 #ffffff08, 0 20px 50px #00000080;
+  }
+  .teclado { position: relative; width: 100%; aspect-ratio: 612 / 190; user-select: none; }
+  .tecla {
+    position: absolute; border-radius: 7px; cursor: crosshair;
+    background: #0b0d11; border: 1px solid #2b303b;
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(8px, 1.05vw, 12px); font-weight: 600; color: #ffffffcc;
+    text-shadow: 0 1px 2px #000; transition: transform .06s, box-shadow .2s, background .2s;
+  }
+  .tecla:hover { transform: translateY(-1px); border-color: #ffffff60; }
+  .ferramentas { display: grid; grid-template-columns: 1fr auto; gap: 22px; margin-top: 22px; align-items: start; }
+  .grupo h3 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--sutil); }
+  .linha { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+  .amostra { width: 34px; height: 34px; border-radius: 10px; cursor: pointer; border: 2px solid #ffffff20;
+             transition: transform .1s; }
+  .amostra:hover { transform: scale(1.1); }
+  .amostra.sel { border-color: white; box-shadow: 0 0 0 3px #7c5cff; }
+  input[type=color] { width: 46px; height: 38px; border: 0; background: none; cursor: pointer; padding: 0; }
+  .botao { padding: 10px 16px; border-radius: 10px; border: 1px solid var(--borda); background: var(--painel2);
+           color: var(--texto); font-weight: 600; cursor: pointer; font-size: 14px; }
+  .botao:hover { border-color: #ffffff40; }
+  .botao.sel { border-color: var(--acento); color: white; background: #7c5cff30; }
+  .principal { background: linear-gradient(135deg, var(--acento), #b35cff); border: 0; color: white;
+               padding: 14px 26px; font-size: 16px; box-shadow: 0 6px 24px #7c5cff55; }
+  .principal:disabled { opacity: .5; cursor: wait; }
+  .modos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .modo { padding: 14px; border-radius: 12px; background: var(--painel2); border: 1px solid var(--borda);
+          cursor: pointer; font-weight: 600; transition: all .15s; }
+  .modo small { display: block; color: var(--sutil); font-weight: 500; margin-top: 4px; }
+  .modo:hover { border-color: #ffffff40; transform: translateY(-2px); }
+  .modo.sel { border-color: var(--acento); background: #7c5cff22; box-shadow: 0 0 0 1px var(--acento); }
+  .controles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; margin-top: 24px; }
+  input[type=range] { width: 100%; accent-color: var(--acento); }
+  .valor { color: var(--acento2); font-weight: 700; margin-left: 6px; }
+  .rodape { display: flex; justify-content: flex-end; margin-top: 22px; gap: 10px; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px);
+           background: var(--painel2); border: 1px solid var(--borda); padding: 14px 22px; border-radius: 12px;
+           transition: transform .3s; font-weight: 600; box-shadow: 0 10px 30px #0008; }
+  .toast.on { transform: translateX(-50%) translateY(0); }
+  .toast.erro { border-color: var(--erro); color: var(--erro); }
+  .toast.ok { border-color: var(--ok); }
+  .escondido { display: none; }
+  .dica { color: var(--sutil); font-size: 13px; margin-top: 12px; }
+  @media (max-width: 760px) {
+    header, main { padding-left: 16px; padding-right: 16px; }
+    .ferramentas { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Z-686 <span>RGB</span></div>
+  <div class="status"><div class="ponto" id="ponto"></div><span id="statusTexto">conectando…</span></div>
+</header>
+<main>
+  <div class="abas">
+    <button class="aba ativa" data-aba="desenho">🎨 Desenho por tecla</button>
+    <button class="aba" data-aba="efeitos">✨ Efeitos</button>
+  </div>
+
+  <section id="aba-desenho" class="painel">
+    <div class="teclado-caixa"><div class="teclado" id="teclado"></div></div>
+    <div class="ferramentas">
+      <div>
+        <div class="grupo"><h3>Cor</h3>
+          <div class="linha" id="amostras">
+            <input type="color" id="seletor" value="#00ff00" title="Escolher qualquer cor">
+          </div>
+        </div>
+        <div class="grupo"><h3>Ferramenta</h3>
+          <div class="linha">
+            <button class="botao sel" data-ferr="pincel">🖌️ Pincel</button>
+            <button class="botao" data-ferr="balde">🪣 Pintar tudo</button>
+            <button class="botao" data-ferr="conta">💧 Conta-gotas</button>
+            <button class="botao" id="limpar">🧽 Apagar tudo</button>
+          </div>
+        </div>
+        <div class="grupo"><h3>Prontos</h3><div class="linha" id="presets"></div></div>
+      </div>
+      <div class="rodape" style="flex-direction:column;align-items:stretch;margin-top:0">
+        <button class="botao principal" id="gravarDesenho">⚡ Gravar no teclado</button>
+        <button class="botao" id="recarregar">↺ Ler do teclado</button>
+      </div>
+    </div>
+    <div class="dica">Clique ou arraste sobre as teclas para pintar. Teclas pretas ficam apagadas.</div>
+  </section>
+
+  <section id="aba-efeitos" class="painel escondido">
+    <div class="grupo"><h3>Efeito</h3><div class="modos" id="modos"></div></div>
+    <div class="controles">
+      <div class="grupo" id="grupoCor"><h3>Cor</h3><div class="linha" id="coresFixas"></div></div>
+      <div class="grupo" id="grupoBrilho"><h3>Brilho <span class="valor" id="brilhoV"></span></h3>
+        <input type="range" id="brilho" min="0" max="4" step="1"></div>
+      <div class="grupo" id="grupoVel"><h3>Velocidade <span class="valor" id="velV"></span></h3>
+        <input type="range" id="velocidade" min="1" max="4" step="1"></div>
+    </div>
+    <div class="rodape"><button class="botao principal" id="aplicarEfeito">✨ Aplicar efeito</button></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const VK = {0x1B:"Esc",0x08:"⌫",0x2E:"Del",0x09:"Tab",0x14:"Caps",0x0D:"Enter",0xA0:"Shift",0xA1:"Shift",
+  0xA2:"Ctrl",0xA3:"Ctrl",0x5B:"Win",0xA4:"Alt",0xA5:"Alt",0x20:"",0xFA:"Fn",0x5D:"☰",0x25:"←",0x26:"↑",
+  0x27:"→",0x28:"↓",0x21:"PgUp",0x22:"PgDn",0x24:"Home",0x23:"End",0x2D:"Ins",0xBD:"-",0xBB:"=",0xDB:"[",
+  0xDD:"]",0xDC:"\\",0xC0:"`",0xBA:";",0xDE:"'",0xBC:",",0xBE:".",0xBF:"/"};
+const ROTULO = vk => VK[vk] ?? ((vk >= 0x30 && vk <= 0x5A) ? String.fromCharCode(vk) : "");
+const PALETA = ["#ff0000","#ff7a00","#ffd000","#00ff00","#00c070","#00ffff","#0080ff","#0000ff",
+                "#8a00ff","#ff00ff","#ff4080","#ffffff","#000000"];
+const COR_FIXA = {vermelho:"#ff0000",amarelo:"#ffff00",verde:"#00ff00",azul_claro:"#00ffff",azul:"#0040ff",
+                  rosa:"#ff00ff",branco:"#ffffff",colorido:"conic-gradient(red,yellow,lime,cyan,blue,magenta,red)"};
+
+let info, desenho = {}, corAtual = "#00ff00", ferramenta = "pincel", arrastando = false;
+let efeito = {modo: 1, cor: 0, brilho: 4, velocidade: 3};
+
+const $ = id => document.getElementById(id);
+const hex = ([r,g,b]) => "#" + [r,g,b].map(v => v.toString(16).padStart(2,"0")).join("");
+const rgb = h => [1,3,5].map(i => parseInt(h.substr(i,2),16));
+
+function toast(msg, tipo="ok") {
+  const t = $("toast"); t.textContent = msg; t.className = `toast on ${tipo}`;
+  clearTimeout(t._h); t._h = setTimeout(() => t.className = "toast", 3200);
+}
+async function api(caminho, corpo) {
+  const r = await fetch(caminho, corpo ? {method:"POST", headers:{"Content-Type":"application/json"},
+                                          body: JSON.stringify(corpo)} : {});
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.erro || "erro");
+  return j.res;
+}
+function conectado(ok, texto) {
+  $("ponto").className = "ponto " + (ok ? "on" : "off");
+  $("statusTexto").textContent = texto;
+}
+
+function pintarTecla(el, c) {
+  const [r,g,b] = c, apagada = r+g+b === 0;
+  el.style.background = apagada ? "#0b0d11" : `linear-gradient(180deg, ${hex(c)}, ${hex(c.map(v=>v*0.7|0))})`;
+  el.style.boxShadow = apagada ? "inset 0 -3px 0 #00000080" :
+    `0 0 14px ${hex(c)}aa, 0 0 32px ${hex(c)}44, inset 0 -3px 0 #00000040`;
+  el.style.color = (r*0.3+g*0.59+b*0.11) > 170 ? "#000000bb" : "#ffffffdd";
+}
+function desenharTeclado() {
+  const tec = $("teclado"); tec.innerHTML = "";
+  const X0 = 20, Y0 = 7, W = 612, H = 190;
+  for (const k of info.teclas) {
+    const [x1,y1,x2,y2] = k.ret, el = document.createElement("div");
+    el.className = "tecla"; el.dataset.led = k.led; el.textContent = ROTULO(k.vk);
+    Object.assign(el.style, {left: (x1-X0)/W*100+"%", top: (y1-Y0)/H*100+"%",
+                             width: (x2-x1)/W*100+"%", height: (y2-y1)/H*100+"%"});
+    el.addEventListener("pointerdown", e => { arrastando = true; usar(el); e.preventDefault(); });
+    el.addEventListener("pointerenter", () => arrastando && ferramenta === "pincel" && usar(el));
+    tec.appendChild(el);
+    pintarTecla(el, desenho[k.led] || [0,0,0]);
+  }
+}
+addEventListener("pointerup", () => arrastando = false);
+function usar(el) {
+  const led = el.dataset.led;
+  if (ferramenta === "conta") { escolherCor(hex(desenho[led] || [0,0,0])); return; }
+  if (ferramenta === "balde") { for (const k of info.teclas) desenho[k.led] = rgb(corAtual); atualizarTudo(); return; }
+  desenho[led] = rgb(corAtual); pintarTecla(el, desenho[led]);
+}
+function atualizarTudo() {
+  for (const el of document.querySelectorAll(".tecla")) pintarTecla(el, desenho[el.dataset.led] || [0,0,0]);
+}
+function escolherCor(c) {
+  corAtual = c; $("seletor").value = c;
+  document.querySelectorAll("#amostras .amostra").forEach(a => a.classList.toggle("sel", a.dataset.c === c));
+}
+
+function montarControles() {
+  const am = $("amostras");
+  for (const c of PALETA) {
+    const a = document.createElement("div"); a.className = "amostra"; a.dataset.c = c;
+    a.style.background = c; a.title = c === "#000000" ? "apagado" : c;
+    a.onclick = () => escolherCor(c); am.insertBefore(a, $("seletor"));
+  }
+  $("seletor").oninput = e => escolherCor(e.target.value);
+  document.querySelectorAll("[data-ferr]").forEach(b => b.onclick = () => {
+    ferramenta = b.dataset.ferr;
+    document.querySelectorAll("[data-ferr]").forEach(x => x.classList.toggle("sel", x === b));
+  });
+  $("limpar").onclick = () => { desenho = {}; atualizarTudo(); };
+  const pr = $("presets");
+  const nomes = {creeper:"🟩 Creeper", brasil:"🇧🇷 Brasil", arco_iris:"🌈 Arco-íris"};
+  for (const [n, cores] of Object.entries(info.presets)) {
+    const b = document.createElement("button"); b.className = "botao"; b.textContent = nomes[n] || n;
+    b.onclick = () => { desenho = structuredClone(cores); atualizarTudo(); toast("Pronto carregado — clique em Gravar"); };
+    pr.appendChild(b);
+  }
+  $("gravarDesenho").onclick = async () => {
+    const b = $("gravarDesenho"); b.disabled = true; b.textContent = "Gravando…";
+    try {
+      const cores = {}; for (const k of info.teclas) cores[k.led] = desenho[k.led] || [0,0,0];
+      await api("/api/desenho", {cores}); toast("Desenho gravado no teclado ✔");
+    } catch (e) { toast(e.message, "erro"); }
+    b.disabled = false; b.textContent = "⚡ Gravar no teclado";
+  };
+  $("recarregar").onclick = carregarEstado;
+
+  const mo = $("modos");
+  for (const m of info.modos) {
+    const d = document.createElement("div"); d.className = "modo"; d.dataset.n = m.n;
+    d.innerHTML = `${m.nome.replaceAll("_"," ")}<small>#${m.n}</small>`;
+    d.onclick = () => { efeito.modo = m.n; mostrarEfeito(); };
+    mo.appendChild(d);
+  }
+  const cf = $("coresFixas");
+  for (const [n, nome] of Object.entries(info.cores)) {
+    const a = document.createElement("div"); a.className = "amostra"; a.dataset.n = n; a.title = nome;
+    a.style.background = COR_FIXA[nome]; a.onclick = () => { efeito.cor = +n; mostrarEfeito(); };
+    cf.appendChild(a);
+  }
+  $("brilho").oninput = e => { efeito.brilho = +e.target.value; mostrarEfeito(); };
+  $("velocidade").oninput = e => { efeito.velocidade = +e.target.value; mostrarEfeito(); };
+  $("aplicarEfeito").onclick = async () => {
+    const m = info.modos.find(x => x.n === efeito.modo), corpo = {modo: efeito.modo};
+    if (m.cor) corpo.cor = efeito.cor;
+    if (m.bri) corpo.brilho = efeito.brilho;
+    if (m.vel) corpo.velocidade = efeito.velocidade;
+    try { await api("/api/modo", corpo); toast("Efeito aplicado ✔"); } catch (e) { toast(e.message, "erro"); }
+  };
+  document.querySelectorAll(".aba").forEach(a => a.onclick = () => {
+    document.querySelectorAll(".aba").forEach(x => x.classList.toggle("ativa", x === a));
+    $("aba-desenho").classList.toggle("escondido", a.dataset.aba !== "desenho");
+    $("aba-efeitos").classList.toggle("escondido", a.dataset.aba !== "efeitos");
+  });
+}
+function mostrarEfeito() {
+  const m = info.modos.find(x => x.n === efeito.modo) || info.modos[0];
+  document.querySelectorAll(".modo").forEach(d => d.classList.toggle("sel", +d.dataset.n === efeito.modo));
+  document.querySelectorAll("#coresFixas .amostra").forEach(a => a.classList.toggle("sel", +a.dataset.n === efeito.cor));
+  $("grupoCor").style.opacity = m.cor ? 1 : .35;
+  $("grupoVel").style.opacity = m.vel ? 1 : .35;
+  $("brilho").value = efeito.brilho; $("brilhoV").textContent = efeito.brilho;
+  $("velocidade").value = efeito.velocidade; $("velV").textContent = efeito.velocidade;
+}
+
+async function carregarEstado() {
+  try {
+    const e = await api("/api/estado");
+    desenho = e.desenho; atualizarTudo();
+    if (e.modo <= 20) Object.assign(efeito, {modo: e.modo, cor: e.cor, brilho: e.brilho, velocidade: e.velocidade});
+    mostrarEfeito();
+    conectado(true, `conectado · ${e.nome.replaceAll("_"," ")}`);
+  } catch (err) { conectado(false, err.message); }
+}
+
+(async () => {
+  try { info = await api("/api/info"); } catch (e) { conectado(false, e.message); return; }
+  montarControles(); desenharTeclado(); escolherCor(corAtual); mostrarEfeito();
+  await carregarEstado();
+})();
+</script>
+</body>
+</html>
