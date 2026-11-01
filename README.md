@@ -1,10 +1,16 @@
 English | [Português](README.pt-BR.md)
 
-# E-YOOSO Z-686 on Linux
+# E-YOOSO Z-686 RGB keyboard: Linux control and firmware recovery
 
 Tools and documentation for the **E-YOOSO Z-686 RGB wired keyboard** (USB
 `258A:0049`, shows up as "BY Tech Gaming Keyboard", SinoWealth **SH68F90A**
 chip). The hardware is similar to the **Redragon K631**.
+
+Useful if your keyboard:
+
+- has no RGB software on Linux (the official driver is Windows only);
+- was **bricked** by a firmware update or a bad tool and no longer shows up in `lsusb`;
+- shows `error -71` in `dmesg` / `journalctl -k` after reflashing.
 
 There are four parts:
 
@@ -95,6 +101,12 @@ Tried it on your keyboard? Open an issue and tell us what worked.
 - [sinowealth-8051-dumper](https://github.com/gashtaan/sinowealth-8051-dumper)
 - [Redragon K631 / Z-686 reverse engineering](https://github.com/A-Rint-A/Redragon-K631-E-Yoosoo-Z-686RGB-Reverse-engineering-): USB capture of the official driver, used for the protocol.
 - SMK project (E-YOOSO Z11): source of the SH68F90A factory fuse values.
+
+## Search terms
+
+E-YOOSO Z686, EYOOSO Z-686, Z686 RGB, Redragon K631, BY Tech Gaming Keyboard,
+258a:0049, SinoWealth SH68F90A, BYK916, keyboard firmware recovery, unbrick
+keyboard, ICP flashing with Arduino, Linux RGB keyboard, hidraw.
 
 ## License
 

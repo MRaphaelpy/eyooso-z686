@@ -1,10 +1,16 @@
 [English](README.md) | Português
 
-# E-YOOSO Z-686 no Linux
+# Teclado E-YOOSO Z-686 RGB: controle no Linux e recuperação de firmware
 
 Ferramentas e documentação para o teclado **E-YOOSO Z-686 RGB com fio**
 (USB `258A:0049`, aparece como "BY Tech Gaming Keyboard", chip SinoWealth
 **SH68F90A**). O hardware é parecido com o do **Redragon K631**.
+
+Serve para quando o seu teclado:
+
+- não tem programa de RGB no Linux (o driver oficial é só para Windows);
+- **parou de funcionar** depois de uma atualização ou de uma ferramenta errada e não aparece no `lsusb`;
+- mostra `error -71` no `dmesg` / `journalctl -k` depois de regravar.
 
 O projeto tem quatro partes:
 
@@ -82,6 +88,12 @@ Testou num teclado seu? Abra uma issue dizendo o que funcionou.
 - [sinowealth-8051-dumper](https://github.com/gashtaan/sinowealth-8051-dumper)
 - [Redragon K631 / Z-686 reverse engineering](https://github.com/A-Rint-A/Redragon-K631-E-Yoosoo-Z-686RGB-Reverse-engineering-): captura USB do driver oficial, usada para o protocolo.
 - Projeto SMK (E-YOOSO Z11): de onde vieram os fuses de fábrica do SH68F90A.
+
+## Termos de busca
+
+E-YOOSO Z686, EYOOSO Z-686, teclado Z686 RGB, Redragon K631, BY Tech Gaming
+Keyboard, 258a:0049, SinoWealth SH68F90A, BYK916, teclado morto, teclado não
+liga, recuperar firmware do teclado, gravar com Arduino, RGB no Linux.
 
 ## Licença
 
